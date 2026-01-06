@@ -26,10 +26,18 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // CORS configuration
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:3000'
+];
+
+if (process.env.NODE_ENV === 'production' && process.env.FRONTEND_URL) {
+  // In production, only allow the configured frontend URL
+  allowedOrigins.length = 0;
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(cors({
-  origin: [process.env.FRONTEND_URL || 'http://localhost:3000',
-    "https://pastebin-lite-app-indol.vercel.app/"
-  ],
+  origin: allowedOrigins,
   credentials: true
 }));
 
